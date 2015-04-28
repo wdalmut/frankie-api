@@ -6,6 +6,13 @@ use App\Transformer\GenericUserTransformer;
 use League\Fractal\Resource\Collection;
 use League\Fractal\Resource\Item;
 use League\Fractal\Pagination\Cursor;
+use App\Entity\User;
+use Zend\InputFilter\Input;
+use Zend\Validator;
+use Zend\InputFilter\InputFilter;
+use App\Problem\ApiProblem;
+use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\HttpFoundation\Response;
 
 /**
  * @Middleware\After(targetClass="App\Serializer\JsonSerializer", targetMethod="serialize")
@@ -48,6 +55,35 @@ class UserController
         $users = $this->userRepository->findOneById($id);
 
         $resource = new Item($users, new GenericUserTransformer());
+
+        return $resource;
+    }
+
+    /**
+     * @Middleware\Route("/user", methods={"POST"})
+     *
+     * @Middleware\Before(targetClass="App\Parser\Body", targetMethod="extract")
+     */
+    public function createAction(Request $request, Response $response)
+    {
+        $name = new Input("name");
+        $name->getValidatorChain()->attach(new Validator\StringLength(2));
+
+        $inputFilter = new InputFilter();
+        $inputFilter->add($name)
+            ->setData($request->request);
+
+        if (!$inputFilter->isValid()) {
+            return new ApiProblem(406, $inputFilter->getMessages());
+        }
+
+        $user = new User();
+        $user->setName($inputFilter->getValue("name"));
+
+        $this->manager->persist($user);
+        $this->manager->flush();
+
+        $resource = new Item($user, new GenericUserTransformer());
 
         return $resource;
     }

@@ -47,4 +47,19 @@ class RepositoryFactory implements AbstractFactoryInterface
 }
 ```
 
+## Create/Drop schema
+
+Create the database
+
+```sh
+./vendor/bin/doctrine orm:schema-tool:create
+```
+
+Drop it:
+
+```sh
+./vendor/bin/doctrine orm:schema-tool:drop --force
+```
+
+
 **This project is just an example do not use**
