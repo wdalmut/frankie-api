@@ -29,6 +29,7 @@ $container = new CompositeContainer();
 $container->addContainer($acclimate->acclimate($sfContainer));
 
 $builder = new ContainerBuilder();
+$builder->useAnnotations(true);
 $builder->wrapContainer($container);
 $phpdiContainer = $builder->build();
 
