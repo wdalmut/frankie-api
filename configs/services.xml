@@ -6,6 +6,7 @@
 
     <!--<parameters></parameters>-->
     <services>
+        <!-- serializer -->
         <service id="serializer" class="Symfony\Component\Serializer\Serializer">
             <argument type="collection">
                 <argument type="service" id="serialize_objectnormalizer"/>
@@ -14,8 +15,24 @@
                 <argument type="service" id="serialize_jsonencoder"/>
             </argument>
         </service>
-        <service id="serialize_objectnormalizer" class="Symfony\Component\Serializer\Normalizer\ObjectNormalizer" />
+        <!-- end serializer -->
+
+        <!-- normalizer -->
+        <service id="serialize_objectnormalizer" class="Symfony\Component\Serializer\Normalizer\ObjectNormalizer">
+            <argument type="service" id="class_metadata_factory"/>
+        </service>
+        <service id="class_metadata_factory" class="Symfony\Component\Serializer\Mapping\Factory\ClassMetadataFactory">
+            <argument type="service" id="serializer_annotation_loader"/>
+        </service>
+        <service id="serializer_annotation_loader" class="Symfony\Component\Serializer\Mapping\Loader\AnnotationLoader">
+            <argument type="service" id="annotation_reader"/>
+        </service>
+        <service id="annotation_reader" class="Doctrine\Common\Annotations\AnnotationReader"/>
+        <!-- end normalizer -->
+
+        <!-- json -->
         <service id="serialize_jsonencoder" class="Symfony\Component\Serializer\Encoder\JsonEncoder" />
+        <!-- end json -->
     </services>
 
 </container>

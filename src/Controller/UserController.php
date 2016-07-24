@@ -29,6 +29,11 @@ class UserController
     private $userRepository;
 
     /**
+     * @Inject("serializer")
+     */
+    private $serializer;
+
+    /**
      * @Middleware\Route("/user", methods={"GET"})
      */
     public function indexAction($request)
@@ -37,7 +42,7 @@ class UserController
 
         $users = $this->userRepository->findAll();
 
-        return $users;
+        return $this->serializer->normalize($users, null, ['groups' => ['user']]);
     }
 
     /**
@@ -45,9 +50,9 @@ class UserController
      */
     public function getAction($request, $response, $id)
     {
-        $users = $this->userRepository->findOneById($id);
+        $user = $this->userRepository->findOneById($id);
 
-        return $users;
+        return $this->serializer->normalize($user, null, ['groups' => ['user']]);
     }
 
     /**
@@ -72,6 +77,6 @@ class UserController
         $this->manager->persist($user);
         $this->manager->flush();
 
-        return $user;
+        return $this->serializer->normalize($user, null, ['groups' => ['user']]);
     }
 }
