@@ -10,11 +10,7 @@ class JsonSerializer
 
     public function serialize($request, $response, $resource)
     {
-        $manager = $this->manager;
-
-        $data = $manager->createData($resource);
-
         $response->headers->set("Content-Type", "application/json");
-        $response->setContent($data->toJson());
+        $response->setContent($this->manager->serialize($resource, 'json'));
     }
 }

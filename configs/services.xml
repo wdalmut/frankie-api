@@ -6,12 +6,16 @@
 
     <!--<parameters></parameters>-->
     <services>
-        <service id="serializer" class="League\Fractal\Manager">
-            <call method="setSerializer">
-                <argument type="service" id="serialize_strategy"/>
-            </call>
+        <service id="serializer" class="Symfony\Component\Serializer\Serializer">
+            <argument type="collection">
+                <argument type="service" id="serialize_objectnormalizer"/>
+            </argument>
+            <argument type="collection">
+                <argument type="service" id="serialize_jsonencoder"/>
+            </argument>
         </service>
-        <service id="serialize_strategy" class="League\Fractal\Serializer\JsonApiSerializer" />
+        <service id="serialize_objectnormalizer" class="Symfony\Component\Serializer\Normalizer\ObjectNormalizer" />
+        <service id="serialize_jsonencoder" class="Symfony\Component\Serializer\Encoder\JsonEncoder" />
     </services>
 
 </container>

@@ -5,7 +5,7 @@ An example of Frankie mixing other projects:
  * Doctrine ORM
  * Symfony2 DiC
  * Zend Framework Service Container
- * Fractal project
+ * Symfony2 Serializer
 
 Zend Service Manager uses fallback strategies in order to autoload Doctrine
 Entity Repositories

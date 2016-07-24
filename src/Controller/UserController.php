@@ -3,9 +3,6 @@ namespace App\Controller;
 
 use Corley\Middleware\Annotations as Middleware;
 use App\Transformer\GenericUserTransformer;
-use League\Fractal\Resource\Collection;
-use League\Fractal\Resource\Item;
-use League\Fractal\Pagination\Cursor;
 use App\Entity\User;
 use Zend\InputFilter\Input;
 use Zend\Validator;
@@ -15,8 +12,9 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 
 /**
+ * @Middleware\Before(targetClass="App\Parser\Body", targetMethod="extract")
  * @Middleware\After(targetClass="App\Serializer\JsonSerializer", targetMethod="serialize")
- * @Middleware\Route("/v1", methods={"GET"})
+ * @Middleware\Route("/v1")
  */
 class UserController
 {
@@ -39,12 +37,7 @@ class UserController
 
         $users = $this->userRepository->findAll();
 
-        //$cursor = new Cursor($page, $page-1, $page+1, count($users));
-
-        $resource = new Collection($users, new GenericUserTransformer());
-        //$resource->setCursor($cursor);
-
-        return $resource;
+        return $users;
     }
 
     /**
@@ -54,15 +47,11 @@ class UserController
     {
         $users = $this->userRepository->findOneById($id);
 
-        $resource = new Item($users, new GenericUserTransformer());
-
-        return $resource;
+        return $users;
     }
 
     /**
      * @Middleware\Route("/user", methods={"POST"})
-     *
-     * @Middleware\Before(targetClass="App\Parser\Body", targetMethod="extract")
      */
     public function createAction(Request $request, Response $response)
     {
@@ -83,8 +72,6 @@ class UserController
         $this->manager->persist($user);
         $this->manager->flush();
 
-        $resource = new Item($user, new GenericUserTransformer());
-
-        return $resource;
+        return $user;
     }
 }
