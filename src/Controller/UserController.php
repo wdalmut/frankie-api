@@ -1,15 +1,12 @@
 <?php
 namespace App\Controller;
 
-use Corley\Middleware\Annotations as Middleware;
-use App\Transformer\GenericUserTransformer;
 use App\Entity\User;
-use Zend\InputFilter\Input;
-use Zend\Validator;
-use Zend\InputFilter\InputFilter;
 use App\Problem\ApiProblem;
+use App\InputFilter\UserFilter;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
+use Corley\Middleware\Annotations as Middleware;
 
 /**
  * @Middleware\Before(targetClass="App\Parser\Body", targetMethod="extract")
@@ -60,12 +57,8 @@ class UserController
      */
     public function createAction(Request $request, Response $response)
     {
-        $name = new Input("name");
-        $name->getValidatorChain()->attach(new Validator\StringLength(2));
-
-        $inputFilter = new InputFilter();
-        $inputFilter->add($name)
-            ->setData($request->request);
+        $inputFilter = new UserFilter();
+        $inputFilter->setData($request->request);
 
         if (!$inputFilter->isValid()) {
             return new ApiProblem(406, $inputFilter->getMessages());
