@@ -6,7 +6,7 @@ return [
     "services" => [
         "factories" => [
             "App\\Orm" => function($sl) {
-                $isDevMode = true;
+                $isDevMode = $_ENV["APP_DEBUG"];
 
                 $config = Setup::createAnnotationMetadataConfiguration(array(__DIR__."/../src/Entity"), $isDevMode, __DIR__ . '/../cache', null, false);
 
