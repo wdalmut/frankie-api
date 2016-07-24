@@ -1,5 +1,7 @@
 # Frankie Api
 
+## Introduction
+
 An example of Frankie mixing other projects:
 
  * Doctrine ORM
@@ -47,6 +49,23 @@ class RepositoryFactory implements AbstractFactoryInterface
 }
 ```
 
+## Conf
+
+You can use environment variables or a `.env` file to save your configuration.
+Create a simple `.env` file in the project root
+
+```
+APP_DEBUG=true
+APP_CACHE_FOLDER="/tmp/frankie-api-cache"
+APP_DATABASE_PATH="/tmp/frankie-api-db.sqlite"
+```
+
+You can access to your environment variable via the global `$_ENV` variable
+
+```php
+$something->setDebugFlag($_ENV["APP_DEBUG"]);
+```
+
 ## Create/Drop schema
 
 Create the database
@@ -63,3 +82,16 @@ Drop it:
 
 
 **This project is just an example do not use**
+
+## Add users
+
+```
+curl -XPOST -d '{"name": "Your Name"}' http://localhost:8080/v1/user
+```
+
+To check validation
+
+```
+curl -v -XPOST -d '{"name": "a"}' http://localhost:8080/v1/user
+```
+

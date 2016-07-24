@@ -2,3 +2,4 @@ tags
 vendor
 cache
 *.sqlite
+.env

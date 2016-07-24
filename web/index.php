@@ -1,4 +1,5 @@
 <?php
+use Dotenv\Dotenv;
 use DI\ContainerBuilder;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -13,7 +14,10 @@ use Symfony\Component\DependencyInjection\Loader\XmlFileLoader;
 use Zend\ServiceManager\ServiceManager;
 use Zend\ServiceManager\Config as ServiceManagerConfig;
 
-$loader = require_once __DIR__.'/../vendor/autoload.php';
+$loader = include __DIR__.'/../vendor/autoload.php';
+
+$dotenv = new Dotenv(__DIR__ . '/../');
+$dotenv->load();
 
 AnnotationRegistry::registerLoader(array($loader, 'loadClass'));
 
@@ -47,8 +51,8 @@ $container->addContainer($acclimate->acclimate($serviceManager));
 $request = Request::createFromGlobals();
 $response = new Response();
 
-AppFactory::$DEBUG = true;
-AppFactory::$CACHE_FOLDER = __DIR__ . "/../cache";
+AppFactory::$DEBUG = $_ENV["APP_DEBUG"];
+AppFactory::$CACHE_FOLDER = $_ENV["APP_CACHE_FOLDER"];
 $app = AppFactory::createApp(__DIR__.'/../src', $container, $request, $response);
 $app->setErrorHandler(function($rq, $rs, $e) {
     $rs->setContent($e->getMessage());
